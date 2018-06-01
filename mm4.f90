@@ -1,4 +1,4 @@
-module mm0
+module mm4
     contains
     subroutine mm(first, second, multiply, status)
         implicit none

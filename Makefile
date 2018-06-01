@@ -19,7 +19,17 @@ OBJS = $(PFS:.pf=.o)
 test: testSuites.inc $(M).o $(OBJS)
 	$(F90) -o $@_$(M) -I. -I$(PFUNIT)/mod -I$(PFUNIT)/include \
 		$(PFUNIT)/include/driver.F90 \
-		./*$(OBJ_EXT) $(LIBS) $(FFLAGS)
+		./*$(OBJ_EXT) $(LIBS) $(FFLAGS); \
+	./test_$(M)
 
-cmain: 
-	ifort -funroll-loops $(M).f90 main.f90 -o main_$(M).f90 -fpp -std08 -O2 
+MODULES = mm0 mm1 mm2 mm3 mm4
+
+measure:
+	mkdir out; \
+	for m in $(MODULES); do \
+		$(call compile,$$m); \
+		out/./main_$$m > times/$$m; \
+	done; \
+	rm -rf out
+
+compile = ifort -funroll-loops $(1).f90 main.f90 -o out/main_$(1) -fpp -std08 -O2 -DM=$(1)
